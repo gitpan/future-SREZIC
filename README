@@ -1,0 +1,58 @@
+NAME
+    future - make pragmas optional
+
+SYNOPSIS
+        # require all users to have future.pm installed
+        use future qw(encoding sort);
+        use encoding 'iso-8859-1';
+        use sort '_qsort';
+
+        # require only users of old perl versions to have future.pm installed
+        BEGIN { eval 'use future qw(warnings)' }
+        use warnings "all";
+
+DESCRIPTION
+    This module is for authors which would like to use "modern" pragmas in
+    their modules and scripts, but also want to remain backward-compatible
+    to older versions of perl without these pragmas. Suppose you want to
+    "use warnings":
+
+        use warnings;
+        # your script
+
+    This will croak on perl 5.005_03 and older, because there is no
+    "warnings.pm" for these versions. Now you could try some tricks like:
+
+        BEGIN { eval 'use warnings' }
+
+    but this will not work, because pragmas are often lexically scoped, so
+    the warnings pragma would be only valid in the BEGIN block (or even in
+    the eval block, I have not checked).
+
+    With "future.pm" you can either write:
+
+        use future qw(warnings);
+        use warnings 'whatever';
+
+    which would enable the warnings pragma for perl 5.6.0 and newer and make
+    the pragma an no-op for older perls. If you do not want your users to
+    install the "future.pm" module (after all it is a non-standard module),
+    then you can write:
+
+        BEGIN { eval 'use future qw(warnings)' }
+        use warnings "whatever";
+
+    Note that the new pragma "if" cannot do this --- if you think it can,
+    then tell me and I retract this module ":-)"
+
+AUTHOR
+    Slaven Rezic <slaven.rezic@berlin.de>
+
+COPYRIGHT
+    Copyright (c) 2002 Slaven Rezic. All rights reserved. This module is
+    free software; you can redistribute it and/or modify it under the same
+    terms as Perl itself.
+
+SEE ALSO
+    perlmodlib(1), if(3).
+
